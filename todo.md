@@ -18,15 +18,16 @@ hands-on tours of the wider Go ecosystem.
 ## Priority for the next rounds
 
 ### High
-- [ ] **Flesh out the channels example** — `12_concurrency/02_channels_examples.go`
-  was an empty stub (removed in Sprint 0). Add a runnable
-  `12_concurrency/channels/channels.go`: unbuffered vs buffered, directionality,
-  `close` + comma-ok receive, `range` over a channel, `select` with `default`.
-  Pair it with the existing `02_channels_examples.md`.  ← next
+- [x] **Flesh out the channels example** — added runnable
+  `12_concurrency/channels/channels.go` (unbuffered vs buffered, directionality,
+  `close` + `range`, comma-ok receive, worker pool, `select` with timeout +
+  `default`); rewrote `02_channels_examples.md` to point at the runnable file
+  instead of embedding a stale copy. Verified: `go run ./12_concurrency/channels`
+  prints all 7 sections. PR #2.
 - [ ] **Per-topic READMEs** — several topic dirs (02, 03, 05, 09…) have no
   `README.md`. Add a short one per topic: what it covers, which examples to run,
   links to the relevant notes. Use `06_maps`/`07_structs_and_methods` as the
-  template (they already have one).
+  template (they already have one).  ← next
 - [ ] **Error-handling topic (new `13_error_handling/`)** — fill the first
   numbering gap. Examples: sentinel errors, `errors.Is`/`errors.As`, wrapping with
   `%w`, custom error types, `defer`/`panic`/`recover`. Cross-link from
@@ -90,6 +91,18 @@ dependencies isolated so the core learning examples stay dependency-light.
   **goreleaser**, and `go work` (workspaces) for multi-module setups.
 
 ## Burndown Log
+
+- 2026-06-28 — Sprint 1: Flesh out the channels example. Extracted the channels
+  walkthrough that previously lived only as a fenced code block inside
+  `02_channels_examples.md` into a runnable `12_concurrency/channels/channels.go`,
+  and added an explicit comma-ok-receive section (`v, ok := <-ch` on a closed
+  channel) that the prose listed but the code omitted. The 7 sections cover
+  unbuffered/buffered channels, directional params, close + range, comma-ok,
+  a 3-worker pool, and `select` with `time.After` + non-blocking `default`.
+  Rewrote the `.md` into a concise topic note linking the runnable file (per the
+  one-example-per-dir convention in `docs/STRUCTURE.md`). Gate: `gofmt -l` empty,
+  `go vet ./...`, `go build ./...`, `go test ./...` green; `go run` prints all
+  sections correctly. PR #2.
 
 - 2026-06-28 — Sprint 0: Consolidation into a clean Go playground. Split the two
   directories that held multiple `func main` declarations into one-example-per-dir
