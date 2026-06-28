@@ -1,217 +1,77 @@
 # go-labs
 
-A comprehensive repository for learning and experimenting with Go, set up and tested using:
+A hands-on **Go playground** — a single module full of small, runnable examples
+that walk through the language from first principles (variables, control flow)
+through to concurrency, the standard library, and testing. Every snippet is a
+self-contained program you can run, read, and tinker with.
 
-- **IDE**: GoLand 2022.3.2
-- **Go Version**: go1.19.5
+- **Go**: 1.23+ (the module targets `go 1.23`; see [`go.mod`](go.mod))
+- **Editor**: any — the repo is editor-agnostic (no IDE files are tracked)
 
-## Getting Started
+## Quick start
 
-Below are the initial setup steps to prepare your environment and start experimenting with Go modules.
-Ensure your terminal is pointed to the root folder of this project before proceeding.
+```bash
+git clone https://github.com/virtualhealthcitizen/go-labs
+cd go-labs
 
-### Module initialization
-
-#### Creating a Module Directory
-
-<details>
-<summary>Click to expand</summary>
-
-#### Use Case
-
-Creating a module directory is your first step in organizing your Go project.
-Modules in Go serve as containers for packages, and having a dedicated directory for each module helps in managing dependencies, versioning, and package distribution efficiently.
-This step is crucial when you're starting a new project or adding a new module to an existing project to ensure that your codebase remains organized and scalable.
-
-```shell
-mkdir module_name
+go build ./...        # compile every example
+go test ./...         # run the tests
+go run ./09_control_structures/05_for_construct   # run one example
 ```
 
-</details>
+If you have `make`:
 
-#### Initializing a Go Module
-
-<details>
-<summary>Click to expand</summary>
-
-#### Use Case
-
-Initializing a Go module with `go mod init` sets the foundation for managing your project's dependencies.
-This command creates a `go.mod` file, marking the current directory as the root of a module.
-It enables Go to track and manage the versions of external packages your project depends on, facilitating reproducible builds and simplifying dependency management.
-This step is essential at the beginning of project development or when adding new dependencies.
-
-```shell
-go mod init module_path
+```bash
+make            # list available targets
+make check      # full gate: gofmt-check + vet + test
+make run DIR=12_concurrency/coroutines_examples
 ```
 
-The `go mod init` command creates a `go.mod` file to track your code's dependencies.
-Initially, this file will only include your module's name and the Go version your code supports.
-As you add dependencies, `go.mod` will list the versions your code depends on, ensuring reproducible builds and direct control over module versions.
+## How it's organised
 
->**Note**: For published modules, the module path must be a downloadable path by Go tools, typically your code's repository URL, e.g., `github.com/squidmin/go-labs/example`.
+Lessons live under numbered topic directories that follow a learning
+progression, and **every runnable example sits in its own directory** as
+`package main`. That single rule keeps `go build ./...` green — two `func main`
+declarations can never collide. Reusable, importable code (e.g. [`util/`](util))
+lives in its own named package and ships with tests.
 
-</details>
+See [`docs/STRUCTURE.md`](docs/STRUCTURE.md) for the full layout and conventions,
+and [`docs/topics.md`](docs/topics.md) for the topic roadmap.
 
-#### Cleaning Up Dependencies
+> **Note:** earlier revisions documented a `go run -tags <filename>` workflow for
+> picking one example out of a shared directory. That is no longer needed (or
+> supported) — examples were split one-per-directory, so you select an example by
+> its path, not a build tag.
 
-<details>
-<summary>Click to expand</summary>
+## Working with Go modules
 
-### Use Case
+This repo is one module named `go-labs`. The commands below are the ones you'll
+reach for most; the official [modules reference](https://go.dev/ref/mod) has the
+rest.
 
-Running `go mod tidy` ensures that the `go.mod` and `go.sum` files accurately reflect the dependencies actually used in your project.
-This command adds missing dependencies, removes unused ones, and updates `go.mod` and `go.sum` to match the source code.
-It's particularly useful after adding or removing imports in your code or when preparing to commit your code to version control, ensuring a clean, up-to-date record of dependencies.
+| Command          | What it does                                            |
+| ---------------- | ------------------------------------------------------- |
+| `go mod tidy`    | Add missing / drop unused dependencies in `go.mod`      |
+| `go build ./...` | Compile all packages                                    |
+| `go vet ./...`   | Report likely mistakes the compiler doesn't catch       |
+| `go test ./...`  | Run all tests                                            |
+| `gofmt -w .`     | Format all source in place                              |
+| `go run ./<dir>` | Build and run a single example without leaving a binary |
 
-```shell
-go mod tidy
-```
+## Contributing examples
 
-Use the `go mod tidy` command to clean up your `go.mod` and `go.sum` files.
-This step adds any missing module dependencies and removes unused ones, ensuring that your module dependencies are accurate and up-to-date.
+1. Create a new directory under the relevant topic (one example per directory).
+2. Write `package main` with a single `func main`; keep it focused on one idea.
+3. Run `make check` (or `gofmt -w . && go vet ./... && go test ./...`) — CI runs
+   the same gate on every push and pull request.
+4. Add a short Markdown note beside the code if the concept needs prose.
 
-More info: [`go mod tidy`](https://go.dev/ref/mod#go-mod-tidy)
+See [`todo.md`](todo.md) for the current backlog, including topics still to be
+covered and ecosystem deep-dives.
 
-</details>
+## Additional resources
 
----
-
-## Building and Running Your Code
-
-### Building and Installing an Executable
-
-<details>
-<summary>Click to expand</summary>
-
-#### Use Case
-
-Compiling your Go code into an executable with `go build` and then installing it with `go install` makes it easy to distribute and run your application.
-This process is crucial for creating standalone applications that can be executed without the Go runtime.
-It's particularly relevant when you're ready to deploy your application or share it with users who may not have Go installed.
-
-#### Steps
-
-1. **Navigate to Your Project Directory**: Ensure you're in the directory containing your `main` package.
-
-   ```shell
-   cd ./directory_name
-   ```
-   
-2. **Build Your Code (Optional)**: This step compiles your code and generates an executable in the current directory.
-   It's useful for testing the build process or when you need an executable in a specific location.
-
-   ```shell
-   go build
-   ```
-
-   > **Note**: You can also build code from outside the module by specifying a path:
-   >
-   > ```shell
-   > go build ./directory_name
-   > ```
-   
-3. **Install Your Application**:
-
-   ```shell
-   cd ./directory_name # Navigate to the module
-   go install
-   ```
-
-4. **Adding the Executable to Your `PATH` (Optional)**:
-
-   After building or installing your Go application, you might want to make the executable globally accessible from the command line, regardless of your current working directory.
-   This is particularly useful for tools or applications you plan to use frequently across various projects or directories.
-
-   To add the executable to your `PATH`, you can use the `export` command in Unix-like operating systems, including Linux and macOS.
-   This command temporarily modifies the `PATH` environment variable for the current terminal session.
-   To make this change permanent, you'll need to add the export command to your shell's startup file, such as `.bashrc`, `.bash_profile`, or `.zshrc`, depending on your shell and operating system.
-
-   The following command uses `go list -f '{{.Target}}'` to dynamically find the installation path of your Go executable and adds it to your `PATH`:
-
-   ```shell
-   export PATH=$PATH:$(go list -f '{{.Target}}')
-   ```
-   
-   > **Note**: This step assumes you've used `go install` to compile and install your executable.
-   > `go install` places binaries in the `$GOPATH/bin` directory (or `$GOBIN` if set), which is the path resolved by `go list -f '{{.Target}}'`.
-   > If you're managing your Go environment correctly, `$GOPATH/bin` should already be in your `PATH`.
-   > However, if you find it's not, or if you've compiled your executable with `go build` and placed it in a custom directory, this command can be adapted to include that directory in your `PATH`.
-
-   > **Important**: Remember, changes made with the `export` command to the `PATH` are temporary and only affect the current terminal session.
-   > For a permanent solution, you need to add the command to your shell's startup file as mentioned earlier.
-
-</details>
-
-### Running an Executable
-
-<details>
-<summary>Click to expand</summary>
-
-To run an installed executable with options:
-
-```shell
-./executable_name -o --option -k=val --key=value
-```
-
-Or if the executable has been added to your `PATH`:
-
-```shell
-executable_name -o --option -k=val --key=value
-```
-
-</details>
-
-### Build or Run a Specific File
-
-<details>
-<summary>Click to expand</summary>
-
-Use the `-tags` flag with `go build` or `go run`:
-
-```shell
-go build -tags filename .
-```
-
-e.g.,
-
-```shell
-go build -tags arrays ./05_arrays_and_slices/01_declaration_and_initialization/arrays
-```
-
-```shell
-go run -tags filename .
-```
-
-e.g.,
-
-```shell
-go run -tags arrays ./05_arrays_and_slices/01_declaration_and_initialization/arrays
-```
-
-</details>
-
-### Running a Script Without Building
-
-<details>
-<summary>Click to expand</summary>
-
-#### Use Case
-
-The ability to run a Go script using `go run` without explicitly compiling it first is invaluable during development.
-It allows for rapid testing and iteration, letting developers focus on writing and refining code without worrying about the build process.
-This approach is ideal for development environments where quick feedback on code changes is crucial.
-
-```shell
-go run script_name.go
-```
-
-Understanding the context and purpose behind these actions can significantly enhance your learning experience and effectiveness in Go development.
-
-</details>
-
----
-
-## Additional Resources
-
-For a more in-depth introduction to Go, consider the official ["Getting Started" tutorial](https://go.dev/doc/tutorial/getting-started).
+- [A Tour of Go](https://go.dev/tour/)
+- [Effective Go](https://go.dev/doc/effective_go)
+- [Go by Example](https://gobyexample.com/)
+- [Standard library docs](https://pkg.go.dev/std)
