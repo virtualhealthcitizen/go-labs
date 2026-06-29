@@ -5,6 +5,8 @@ that walk through the language from first principles (variables, control flow)
 through to concurrency, the standard library, and testing. Every snippet is a
 self-contained program you can run, read, and tinker with.
 
+![go-labs demo](demo.gif)
+
 - **Go**: 1.23+ (the module targets `go 1.23`; see [`go.mod`](go.mod))
 - **Editor**: any — the repo is editor-agnostic (no IDE files are tracked)
 
