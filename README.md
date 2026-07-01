@@ -1,5 +1,7 @@
 # go-labs
 
+[![CI](https://github.com/virtualhealthcitizen/go-labs/actions/workflows/ci.yml/badge.svg)](https://github.com/virtualhealthcitizen/go-labs/actions/workflows/ci.yml) [![Release](https://img.shields.io/github/v/release/virtualhealthcitizen/go-labs?sort=semver)](https://github.com/virtualhealthcitizen/go-labs/releases/latest)
+
 A hands-on **Go playground** — a single module full of small, runnable examples
 that walk through the language from first principles (variables, control flow)
 through to concurrency, the standard library, and testing. Every snippet is a
